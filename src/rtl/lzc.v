@@ -1,34 +1,28 @@
-/*** lzc_b: Leading Zeroes Counter, type B
+/*** lzc: Leading Zeroes Counter
 
-This is a dumb LZC that uses a giant casez statement to count leading zeroes,
-and is basically the same as type A but reshuffled/extended slightly.
-
-Read the notes for lzc_a for more info.
-
-See also: lzc_c and _d.
+This is a dumb LZC that uses a giant casez statement to count leading zeroes.
 
 ***/
 
-`undef SZ
-`define SZ  24  //SMELL: This should match WIDTH, i.e. `Qm+`Qn
+`define SZ  24  // For now, this is hardcoded to work for 24-bit inputs.
 
-module lzc_b #(
+module lzc #(
 /* verilator lint_off WIDTH */
     parameter [6:0] WIDTH=`SZ
 /* verilator lint_on WIDTH */
 )(
     input   [WIDTH-1:0] i_data,
-    output  [6:0]       lzc_cnt  // 0..64
+    output  [6:0]       lzc_cnt  //SMELL: We only need to return a result that is [0,`SZ] which for SZ==24 needs only [4:0].
 );
 
     function [6:0] f_lzc(input [WIDTH-1:0] data);
 
 `ifndef OPENLANE
         if (WIDTH>64 || WIDTH<1) begin
-            $error("lzc_b module only designed to support 1..64 inputs but you want: %1d", WIDTH);
+            $error("lzc module only designed to support 1..64 inputs but you want: %1d", WIDTH);
         end
         if (WIDTH!=`SZ) begin
-            $error("lzc_b module is currently hardcoded to expect a WIDTH of %1d, but you want: %1d", `SZ, WIDTH);
+            $error("lzc module is currently hardcoded to expect a WIDTH of %1d, but you want: %1d", `SZ, WIDTH);
         end
 `endif
 

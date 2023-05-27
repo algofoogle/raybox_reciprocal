@@ -1,21 +1,14 @@
-// Fixed-point reciprocal for Q16.16, adapted from:
+// Fixed-point reciprocal for Q12.12, adapted from:
 // https://github.com/ameetgohil/reciprocal-sv/blob/master/rtl/reciprocal.sv
 // See also: https://observablehq.com/@drom/reciprocal-approximation
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-//SMELL: If possible, make this work using parameters in fixed_point_params.v:
-// `include "fixed_point_params.v"
-
-//`define LZC_TYPE_A  //SMELL: lzc_a is currently hardcoded to 32-bit.
-`define LZC_TYPE_B
-//`define LZC_TYPE_C
-//`define LZC_TYPE_D
 
 module reciprocal #(
-    parameter [6:0] M = 16,         // Integer bits, inc. sign.
-    parameter       N = 16          // Fractional bits.
+    parameter [6:0] M = 12,         // Integer bits, inc. sign.
+    parameter       N = 12          // Fractional bits.
 )(
     input   wire [M-1:-N]   i_data,
     input   wire            i_abs,  // 1=we want the absolute value only.
@@ -55,7 +48,7 @@ module reciprocal #(
 
 
     /*
-    Reciprocal Algorithm for numbers in the range [0.5,1)
+    Reciprocal approximation algorithm for numbers in the range [0.5,1)
     a = input
     b = 1.466 - a
     c = a * b;
@@ -78,19 +71,7 @@ module reciprocal #(
 
     assign unsigned_data = sign ? (~i_data + 1'b1) : i_data;
 
-`ifdef LZC_TYPE_A
-    lzc_a #(.WIDTH(M+N)) lzc_inst(.i_data(unsigned_data), .lzc_cnt(lzc_cnt)); // TEST TYPE A
-
-`elsif LZC_TYPE_B
-    lzc_b #(.WIDTH(M+N)) lzc_inst(.i_data(unsigned_data), .lzc_cnt(lzc_cnt)); // TEST TYPE B
-
-`elsif LZC_TYPE_C
-    lzc_c #(.WIDTH(M+N)) lzc_inst(.i_data(unsigned_data), .lzc_cnt(lzc_cnt)); // TEST TYPE C
-
-`elsif LZC_TYPE_D
-    lzc_d #(.WIDTH(32)) lzc_inst(.i_data({unsigned_data, {(32-`Qm-`Qn){1'b1}} }), .lzc_cnt(lzc_cnt)); // TEST TYPE D
-    //NOTE: Type D needs WIDTH to be a power of 2; if we use fewer `F bits, then LSBs are padded with 1. This keeps the range normal, in 0..(`Qm+`Qn).
-`endif
+    lzc #(.WIDTH(M+N)) lzc_inst(.i_data(unsigned_data), .lzc_cnt(lzc_cnt));
 
     assign rescale_lzc = $signed(M) - $signed(lzc_cnt); //SMELL: rescale_lzc and lzc_cnt are both 7 bits; could there be a sign problem??
 
