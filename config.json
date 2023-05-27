@@ -1,5 +1,5 @@
 {
-    "DESIGN_NAME": "reciprocal",
+    "DESIGN_NAME": "reciprocal_12_12",
     "VERILOG_FILES": "dir::src/rtl/*.v",
     "CLOCK_PORT": "clk",
     "CLOCK_PERIOD": 10.0,
@@ -7,5 +7,6 @@
     "FP_SIZING": "absolute",
     "DIE_AREA": "0 0 200 200",
     "PL_TARGET_DENSITY": 0.65,
-    "GRT_OVERFLOW_ITERS": 100
+    "GRT_OVERFLOW_ITERS": 100,
+    "FP_PIN_ORDER_CFG": "dir::pin_order.cfg"
 }

@@ -96,7 +96,7 @@ module reciprocal #(
     // [M-1:M-2] are the bits that would overflow if multiplied by 4 (i.e. SHL-2):
     assign reci = |f[M-1:M-2] ? nSat : f << 2; //saturation detection and (e*4)
     //SMELL: I think we could keep 2 extra bits of precision if we didn't simply do f<<2,
-    // but rather extracted a shifted bit range from `e`.
+    // but rather extracted a shifted bit range from `e` (since it is a product, hence wider).
 
     // Rescale reciprocal by the lzc factor
     //SMELL: Double-check this [6]; it was [4] for Q6.10, so I'm not sure how it works.
