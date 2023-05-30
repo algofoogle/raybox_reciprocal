@@ -71,7 +71,9 @@ module reciprocal #(
 
     assign unsigned_data = sign ? (~i_data + 1'b1) : i_data;
 
-    lzc #(.WIDTH(M+N)) lzc_inst(.i_data(unsigned_data), .lzc_cnt(lzc_cnt));
+    // lzc #(.WIDTH(M+N)) lzc_inst(.i_data(unsigned_data), .lzc_cnt(lzc_cnt));
+    lzc24 lzc_inst(.x(unsigned_data), .z(lzc_cnt[4:0]) );
+    assign lzc_cnt[6:5] = 0;
 
     assign rescale_lzc = $signed(M) - $signed(lzc_cnt); //SMELL: rescale_lzc and lzc_cnt are both 7 bits; could there be a sign problem??
 

@@ -1,5 +1,5 @@
 MAIN_VSOURCES = src/rtl/lzc_fast.v
-TEST_VSOURCES = test/lzc16_tb.v
+TEST_VSOURCES = test/lzc24_tb.v
 
 # COCOTB variables:
 export COCOTB_REDUCED_LOG_FMT=1
@@ -12,7 +12,7 @@ test: clean
 	iverilog \
 		-g2005 \
 		-o sim_build/sim.vvp \
-		-s lzc16 -s lzc16_tb \
+		-s lzc24 -s lzc24_tb \
 		$(MAIN_VSOURCES) $(TEST_VSOURCES)
 	PYTHONOPTIMIZE=${NOASSERT} MODULE=test.test_lzc \
 		vvp -M $$(cocotb-config --prefix)/cocotb/libs -m libcocotbvpi_icarus \
